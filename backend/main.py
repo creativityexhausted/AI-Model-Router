@@ -9,5 +9,8 @@ def home():
 
 @app.post("/ask")
 def ask_router(question: str):
-    answer = route_question(question)
-    return {"answer": answer}
+    # Unpack the tuple here
+    answer_text, model_name = route_question(question)
+    
+    # Return both fields
+    return {"answer": answer_text, "model": model_name}

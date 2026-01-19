@@ -10,7 +10,6 @@ st.set_page_config(
 )
 
 # 2. Custom CSS for Dark Theme and Styling
-# This injects HTML/CSS to override default Streamlit styles
 st.markdown("""
     <style>
     /* Main Background - Dark Gradient */
@@ -52,8 +51,22 @@ st.markdown("""
         padding: 20px;
         margin-top: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        position: relative;
     }
     
+    /* NEW: Model Name Badge Styling */
+    .model-badge {
+        display: inline-block;
+        background-color: #30363d;
+        color: #8b949e;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-bottom: 12px;
+        border: 1px solid #6e7681;
+    }
+
     /* Header Styling */
     h1 {
         text-align: center;
@@ -89,12 +102,17 @@ with col2:
                 try:
                     # --- CORE CODE STARTS ---
                     r = requests.post("http://localhost:8000/ask?question=" + question)
-                    answer = r.json()["answer"]
+                    data = r.json()
+                    
+                    # Extract Answer and Model Name safely
+                    answer = data.get("answer", "No answer received.")
+                    model_used = data.get("model", "Unknown Model") 
                     # --- CORE CODE ENDS ---
                     
-                    # Display Result in a nice card
+                    # Display Result in a nice card with the Badge
                     st.markdown(f"""
                         <div class="result-card">
+                            <div class="model-badge"> Model: {model_used}</div>
                             <h3 style="color: #58a6ff; margin-top: 0;">Response:</h3>
                             <p style="font-size: 1.1em; line-height: 1.6;">{answer}</p>
                         </div>
